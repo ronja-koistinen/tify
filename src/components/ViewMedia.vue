@@ -1,4 +1,5 @@
 <script>
+import { useFullscreen } from '@vueuse/core';
 import OpenSeadragon from 'openseadragon';
 
 import { parseCoordinatesString } from '../modules/parsing';
@@ -22,6 +23,7 @@ export default {
 				// NOTE: See updateViewerState()
 				isReset: true,
 			},
+			fullscreen: useFullscreen(this.$store.rootElement.parentNode),
 		};
 	},
 	computed: {
@@ -360,6 +362,7 @@ export default {
 
 			this.$api.expose(this.resetImage);
 			this.$api.expose(this.viewer, 'viewer');
+			this.$api.expose(this.fullscreen.toggle);
 
 			this.promise.resolve();
 		},
@@ -534,6 +537,9 @@ export default {
 				case '_':
 				case 'S':
 					this.zoomOut();
+					break;
+				case 'f':
+					this.fullscreen.toggle();
 					break;
 				default:
 			}
@@ -749,6 +755,26 @@ export default {
 			v-if="viewer"
 			class="tify-media-buttons -controls"
 		>
+			<button
+				v-if="!fullscreen.isFullscreen"
+				type="button"
+				class="tify-media-button"
+				:title="$translate('Fullscreen')"
+				:aria-label="$translate('Fullscreen')"
+				@click="fullscreen.toggle()"
+			>
+				<IconFullscreen />
+			</button>
+			<button
+				v-else
+				type="button"
+				class="tify-media-button"
+				:title="$translate('Exit fullscreen')"
+				:aria-label="$translate('Exit fullscreen')"
+				@click="fullscreen.toggle()"
+			>
+				<IconFullscreenExit />
+			</button>
 			<button
 				type="button"
 				class="tify-media-button"

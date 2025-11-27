@@ -1,5 +1,5 @@
 <script>
-import { onClickOutside, useFullscreen } from '@vueuse/core';
+import { onClickOutside } from '@vueuse/core';
 
 import { preventEvent } from '../modules/keyboard';
 
@@ -11,7 +11,6 @@ export default {
 	data() {
 		return {
 			controlsVisible: false,
-			fullscreen: useFullscreen(this.$store.rootElement.parentNode),
 		};
 	},
 	computed: {
@@ -35,7 +34,6 @@ export default {
 	created() {
 		this.$api.expose(this.setView);
 		this.$api.expose(this.toggleDoublePage);
-		this.$api.expose(this.fullscreen.toggle);
 	},
 	mounted() {
 		this.$store.rootElement.addEventListener('keydown', this.onKeyDown);
@@ -103,9 +101,6 @@ export default {
 					if (this.$store.manifest) {
 						this.toggleDoublePage();
 					}
-					break;
-				case 'f':
-					this.fullscreen.toggle();
 					break;
 				default:
 			}
@@ -356,29 +351,6 @@ export default {
 					>
 						<IconHelpCircleOutline />
 						<span>{{ $translate('Help') }}</span>
-					</button>
-
-					<button
-						v-if="!fullscreen.isFullscreen"
-						type="button"
-						class="tify-header-button -icon-only"
-						:title="$translate('Fullscreen')"
-						:aria-label="$translate('Fullscreen')"
-						@click="fullscreen.toggle()"
-					>
-						<IconFullscreen />
-						<span>{{ $translate('Fullscreen') }}</span>
-					</button>
-					<button
-						v-else
-						type="button"
-						class="tify-header-button -icon-only"
-						:title="$translate('Exit fullscreen')"
-						:aria-label="$translate('Exit fullscreen')"
-						@click="fullscreen.toggle()"
-					>
-						<IconFullscreenExit />
-						<span>{{ $translate('Exit fullscreen') }}</span>
 					</button>
 				</div>
 
